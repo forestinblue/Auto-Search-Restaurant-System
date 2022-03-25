@@ -159,6 +159,7 @@ class GatherNewRestaurantData:
         time.sleep(3)
         foodsafetykorea_new_information =pd.read_csv('C:/Users/junseok/Downloads/foodsafetykorea_new_information.csv')
         upload_dataframe = foodsafetykorea_new_information.loc[foodsafetykorea_new_information.old_address.isnull()]
+        upload_dataframe.reset_index(drop=True, inplace=True)
         newborn_restaurant_address = list(upload_dataframe['new_address']) #new_address로 수정 , test로 old_address
         search_box = driver.find_element(By.NAME, "juso")
         for i in range(len(upload_dataframe)):
@@ -169,34 +170,47 @@ class GatherNewRestaurantData:
                 time.sleep(1.5)
                 try:
                     upload_dataframe['old_address'][i] = driver.find_elements_by_css_selector('#insert_data_3 ')[0].text  #지번 주소
-                except:
+                except Exception as e:
+                    print(e)
                     upload_dataframe['old_address'][i]  = ''
                 try:
                     upload_dataframe['zip_code'][i] = driver.find_elements_by_css_selector('#insert_data_4')[0].text
-                except:
+                except Exception as e:
+                    print(e)
                     upload_dataframe['zip_code'][i] =''
                 n_lat_lon = driver.find_elements_by_css_selector('#insert_data_5')[0].text  
                 n_lon = n_lat_lon.split(',')[0]
                 n_lat = n_lat_lon.split(',')[1]
                 n_lon  = n_lon[3:]
                 n_lat =   n_lat[4:]
+                print()
+                
+                
+
                 try:
                     upload_dataframe['latitude'][i] = n_lat
-                except:
+                except Exception as e:
+                    print(e)
                     upload_dataframe['latitude'][i] = ''
                 try :
                     upload_dataframe['longtitude'][i] = n_lon
-                except:
+                except Exception as e:
+                    print(e)
                     upload_dataframe['longtitude'][i] =  ''
-                try:
-                    print(upload_dataframe['old_address'][i])
-                    print(upload_dataframe['zip_code'][i])
-                    print(upload_dataframe['latitude'][i] )
-                    print(upload_dataframe['longtitude'][i])
-                except:
-                    print('?')
+                    
+                print(upload_dataframe['old_address'][i])    
+                print(upload_dataframe['zip_code'][i])
+                print(upload_dataframe['latitude'][i])
+                print(upload_dataframe['longtitude'][i])
+                    
+                    
+
                 n_lat_lon = ''
                 n_lat = ''
                 n_lon = ''
-                break
-        foodsafetykorea_new_information.to_csv('C:/Users/junseok/Downloads/upload_dataframe.csv', index = None)
+                break 
+                        
+        upload_dataframe.to_csv('C:/Users/junseok/Downloads/foodsafetykorea_new_information.csv', index = None)
+        
+        
+        
