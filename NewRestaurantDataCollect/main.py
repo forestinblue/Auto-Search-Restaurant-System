@@ -1,8 +1,15 @@
+# python main.pymain.py
 from NewRestaurantAutoCollect import GatherNewRestaurantData
-from NewRestaurantUploadFlask import uploadFlask
+from NewRestaurantUploadFlask import run_app
 
 
 if __name__ == '__main__':
-    GatherNewRestaurantData.crawling_new_restaurant_data()
+    GatherNewRestaurantData.click_next_page_upload_csv()
     GatherNewRestaurantData.crawling_lat_lon_data()
-    uploadFlask.upload_json()
+    run_app()
+    
+    
+    
+    
+    
+    
