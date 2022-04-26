@@ -58,6 +58,8 @@ class GatherNewRestaurantData:
         time.sleep(10)
         return_dataframe = pd.DataFrame(columns=['name', 'license_number', 'old_address',
                                                  'new_address', 'zip_code', 'latitude', 'longtitude', 'index_number'])
+        except_name_list = ['씨유', 'CU', 'cu', '세븐일레븐', '이마트24', 'GS25',
+                            '지에스25', 'GS', '보드게임', '보드카페', '보드까페', '장례', '마트', 'PC', 'pc', '유통']
 
         for n in range(1, 50, 1):
             time.sleep(0.1)
@@ -82,8 +84,17 @@ class GatherNewRestaurantData:
                 n_zip_code = ''
                 n_longtitude = ''
                 n_latitude = ''
-                new_restaurant_information = new_restaurant_information.append({'name': n_name,  'new_address': n_new_address, 'old_address': n_old_address,  'zip_code': n_zip_code, 'license_number': n_license_number,
-                                                                               'index_number': n_index_number, 'latitude': n_latitude, 'longtitude': n_longtitude}, ignore_index=True)  # , 'phonenumber':phonenumber, 'menu': menu,
+
+                append_judgement = True
+                # except_name_list 제외환  나머지 항목은 append flow 만들기
+                for i in range(len(except_name_list)):
+
+                    if except_name_list[i] == n_name:
+                        append_judgement = False
+                if append_judgement == True:
+                    new_restaurant_information = new_restaurant_information.append({'name': n_name,  'new_address': n_new_address, 'old_address': n_old_address,  'zip_code': n_zip_code, 'license_number': n_license_number,
+                                                                                    'index_number': n_index_number, 'latitude': n_latitude, 'longtitude': n_longtitude}, ignore_index=True)
+
                 print(n_index_number)
                 print(n_license_number)
                 print(n_name)
@@ -104,11 +115,12 @@ class GatherNewRestaurantData:
 
     # 식품나라안전 click next page
     def click_next_page_upload_csv():
-
         GatherNewRestaurantData.open_driver_new_restaurant_site()  # open 식품나라안전
+
         page_count = 0
         # assign new-dataframe
         foodsafetykorea_new_restaurant_information = GatherNewRestaurantData.clear_restaurant_dataframe()
+
         quit = 0
         while quit == 0:  # quit = 0이면 while 반복 ,  quit = 1이면 break while
             page_count += 1
@@ -121,6 +133,8 @@ class GatherNewRestaurantData:
                 '#contents > main > section > div.board-footer > div > ul > li:nth-child(7) > a').click()  # 식품안전나라 next page click
             time.sleep(2)
         print('finish crawling new restaurant data')
+        foodsafetykorea_new_restaurant_information = foodsafetykorea_new_restaurant_information.reset_index(
+            drop=True)
         return foodsafetykorea_new_restaurant_information
 
     def open_driver_lat_lon_site():
@@ -212,5 +226,6 @@ class GatherNewRestaurantData:
         return foodsafetykorea_new_restaurant_information_dict
 
 
-# if __name__ == '__main__':
-#    GatherNewRestaurantData.crawling_lat_lon_data()
+if __name__ == '__main__':
+
+    foodsafetykorea_new_restaurant_information_dict = GatherNewRestaurantData.click_next_page_upload_csv()
